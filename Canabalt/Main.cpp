@@ -4,6 +4,9 @@
 // Libraries
 #include <SFML/Graphics.hpp>
 
+// Project Includes
+#include "AssetManager.h"
+
 
 
 int main()
@@ -19,6 +22,13 @@ int main()
 
 	// Timer functionality
 	sf::Clock gameClock;
+
+	//Create AssetManager
+	AssetManager assets;
+
+	// Testing AssetManager
+	sf::Sprite testSprite;
+	testSprite.setTexture(AssetManager::GetTexture("graphics/playerJump.png"));
 
 	// end game setup
 	// --------------------------------------
@@ -63,7 +73,7 @@ int main()
 		gameWindow.clear();
 
 		// Draw Everything
-
+		gameWindow.draw(testSprite);
 
 		// Display the window contents to the screen
 		gameWindow.display();
