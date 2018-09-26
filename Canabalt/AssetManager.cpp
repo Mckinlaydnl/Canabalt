@@ -61,3 +61,81 @@ sf::Texture & AssetManager::GetTexture(std::string _fileName)
 	}
 
 }
+sf::SoundBuffer & AssetManager::GetSoundBuffer(std::string _fileName)
+{
+	// Create an iterator
+	// and search for the required key
+	// using the passed in file name
+	auto keyValuePair = s_instance->m_soundBuffers.find(_fileName);
+	// "auto" in this case is equivalent to writing std::map<std::string,sf::Texture>::iterator
+	//Auto can be used when the compiler can figure out the type of a variable for you
+	// YOU ARE NOT ALLOWED TO USE THIS EXCEPT FOR ITERATORS
+
+	//Did we find the soundBuffer? (aka was it already loaded)
+	// (iterator will be at the end if we did NOT find it)
+	if (keyValuePair != s_instance->m_soundBuffers.end())
+	{
+		//YES! We found it!
+
+	}
+	else
+	{
+		// No! we didnt find it.
+
+		//Let's create it then!
+
+		//Create a new key value pair using the filename
+		// The subscript [] operator creates an entry in
+		// the map if there is already not one there
+
+
+		sf::SoundBuffer& soundBuffer = s_instance->m_soundBuffers[_fileName];
+		// blank soundBuffer has been created
+		// Now just load it from file using sfml
+		soundBuffer.loadFromFile(_fileName);
+
+		//return the soundBuffer to the calling code
+		return soundBuffer;
+
+	}
+
+}
+sf::Font & AssetManager::GetFont(std::string _fileName)
+{
+	// Create an iterator
+	// and search for the required key
+	// using the passed in file name
+	auto keyValuePair = s_instance->m_Fonts.find(_fileName);
+	// "auto" in this case is equivalent to writing std::map<std::string,sf::Texture>::iterator
+	//Auto can be used when the compiler can figure out the type of a variable for you
+	// YOU ARE NOT ALLOWED TO USE THIS EXCEPT FOR ITERATORS
+
+	//Did we find the soundBuffer? (aka was it already loaded)
+	// (iterator will be at the end if we did NOT find it)
+	if (keyValuePair != s_instance->m_Fonts.end())
+	{
+		//YES! We found it!
+
+	}
+	else
+	{
+		// No! we didnt find it.
+
+		//Let's create it then!
+
+		//Create a new key value pair using the filename
+		// The subscript [] operator creates an entry in
+		// the map if there is already not one there
+
+
+		sf::Font& Fonts = s_instance->m_Fonts[_fileName];
+		// blank soundBuffer has been created
+		// Now just load it from file using sfml
+		Fonts.loadFromFile(_fileName);
+
+		//return the soundBuffer to the calling code
+		return Fonts;
+
+	}
+
+}

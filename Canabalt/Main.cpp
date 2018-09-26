@@ -17,7 +17,7 @@ int main()
 
 	// Render Window creation
 	sf::RenderWindow gameWindow;
-	gameWindow.create(sf::VideoMode::getDesktopMode(), "Whack A Critter",
+	gameWindow.create(sf::VideoMode::getDesktopMode(), "Canabalt",
 		sf::Style::Titlebar | sf::Style::Close);
 
 	// Timer functionality
@@ -29,6 +29,16 @@ int main()
 	// Testing AssetManager
 	sf::Sprite testSprite;
 	testSprite.setTexture(AssetManager::GetTexture("graphics/playerJump.png"));
+	
+	sf::Sound testSound;
+	testSound.setBuffer(AssetManager::GetSoundBuffer("audio/deathSound.ogg"));
+	testSound.play();
+
+	sf::Text testText;
+	testText.setFont(AssetManager::GetFont("fonts/mainFont.ttf"));
+	testText.setString("Test Text");
+	
+	
 
 	// end game setup
 	// --------------------------------------
@@ -74,6 +84,7 @@ int main()
 
 		// Draw Everything
 		gameWindow.draw(testSprite);
+		gameWindow.draw(testText);
 
 		// Display the window contents to the screen
 		gameWindow.display();
