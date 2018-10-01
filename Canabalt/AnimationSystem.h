@@ -27,7 +27,7 @@ private:
 
 	// Settings
 	sf::Sprite* m_sprite;
-	std::map<std::string, Animation>m_animation;
+	std::map<std::string, Animation>m_animations;
 
 	// State
 	Animation* m_currentAnimation;
