@@ -34,8 +34,14 @@ int main()
 	Player myPlayer;
 	myPlayer.Spawn();
 
-	Platform platform;
-	platform.Spawn();
+	
+
+	std::vector<Platform> myPlatforms;
+	for (int i = 0; i < 5; ++i)
+	{
+		myPlatforms.push_back(Platform());
+		myPlatforms.back().Spawn();
+	}
 
 	// Create game camera
 	sf::View camera = gameWindow.getDefaultView();
@@ -80,7 +86,12 @@ int main()
 		myPlayer.Update(frameTime);
 
 		// Collision detection
-		myPlayer.HandleCollision(platform.GetCollider());
+		std::vector<sf::FloatRect > platformColliders;
+		for (auto it = myPlatforms.begin(); it != myPlatforms.end(); ++it) 
+		{
+			platformColliders.push_back(it->GetCollider());
+		}
+		
 
 		//Update camera positon
 		camera.setCenter(myPlayer.GetPosition().x + camera.getSize().x * 0.4f, camera.getCenter().y);
@@ -99,7 +110,11 @@ int main()
 		// Draw Everything
 		gameWindow.setView(camera);
 		myPlayer.Draw(gameWindow);
-		platform.Draw(gameWindow);
+		for (auto it = myPlatforms.begin(); it != myPlatforms.end(); ++it)
+		{
+			it -> Draw(gameWindow);
+		}
+
 
 		//Draw the UI to the window
 		gameWindow.setView(gameWindow.getDefaultView());
