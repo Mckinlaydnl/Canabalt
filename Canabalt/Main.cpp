@@ -7,6 +7,7 @@
 // Project Includes
 #include "AssetManager.h"
 #include "Player.h"
+#include "Platform.h"
 
 
 
@@ -27,12 +28,19 @@ int main()
 	//Create AssetManager
 	AssetManager assets;
 
+	// Seed random number generator
+	srand(time(NULL));
 	//Create Player
 	Player myPlayer;
 	myPlayer.Spawn();
 
+	Platform platform;
+	platform.Spawn();
+
 	// Create game camera
 	sf::View camera = gameWindow.getDefaultView();
+
+	//create the player
 
 	// end game setup
 	// --------------------------------------
@@ -68,7 +76,11 @@ int main()
 		// --------------------------------------
 		sf::Time frameTime = gameClock.restart();
 		
+		//Process al game objects
 		myPlayer.Update(frameTime);
+
+		// Collision detection
+		myPlayer.HandleCollision(platform.GetCollider());
 
 		//Update camera positon
 		camera.setCenter(myPlayer.GetPosition().x + camera.getSize().x * 0.4f, camera.getCenter().y);
@@ -87,6 +99,7 @@ int main()
 		// Draw Everything
 		gameWindow.setView(camera);
 		myPlayer.Draw(gameWindow);
+		platform.Draw(gameWindow);
 
 		//Draw the UI to the window
 		gameWindow.setView(gameWindow.getDefaultView());

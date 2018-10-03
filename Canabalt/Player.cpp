@@ -10,22 +10,21 @@
 
 // Constructor
 Player::Player()
-	: m_sprite()
+	:m_sprite()
 	, m_jumpSound()
 	, m_deathSound()
 	, m_landSound()
 	, m_animation()
-	, m_velocity(0.0f,0.0f)
+	, m_velocity(0.0f, 0.0f)
+	, m_touchingGround(false)
 {
-	// Sprite Setup
-	m_sprite.setTexture(AssetManager::GetTexture("graphics/playerJump.png"));
 
-	// Sound Setup
+	//Sound setup
 	m_jumpSound.setBuffer(AssetManager::GetSoundBuffer("audio/jump.wav"));
 	m_deathSound.setBuffer(AssetManager::GetSoundBuffer("audio/death.wav"));
 	m_landSound.setBuffer(AssetManager::GetSoundBuffer("audio/landing.wav"));
 
-	//Testing Animation
+	//Testing animation
 	m_animation.SetSprite(m_sprite);
 
 	Animation& runAnimation = m_animation.CreateAnimation("run");
@@ -33,6 +32,7 @@ Player::Player()
 	runAnimation.AddFrame(AssetManager::GetTexture("graphics/playerRun2.png"));
 	runAnimation.SetLoop(true);
 	runAnimation.SetPlayBackSpeed(10.0f);
+
 
 	Animation& jumpAnimation = m_animation.CreateAnimation("jump");
 	jumpAnimation.AddFrame(AssetManager::GetTexture("graphics/playerJump.png"));
@@ -46,10 +46,10 @@ void Player::Input(sf::Event _gameEvent)
 	if (_gameEvent.type == sf::Event::KeyPressed)
 	{
 		// Check if the button was space
-		if (_gameEvent.key.code == sf::Keyboard::Space)
+		if (_gameEvent.key.code == sf::Keyboard::Space && m_touchingGround)
 		{
 			// Player has tried to jump!
-
+			
 			// Play Jump Sound
 			m_jumpSound.play();
 
@@ -65,8 +65,11 @@ void Player::Update(sf::Time _frameTime)
 	m_animation.Update(_frameTime);
 
 	// Apply gravity to our velocity
-	float velocityChange = GRAVITY * _frameTime.asSeconds();
-	m_velocity.y += velocityChange;
+	if (m_touchingGround == false)
+	{
+		float velocityChange = GRAVITY * _frameTime.asSeconds();
+		m_velocity.y += velocityChange;
+	}
 
 	// Move sprite based on velocity
 	sf::Vector2f currentPosition = m_sprite.getPosition();
@@ -92,3 +95,65 @@ sf::Vector2f Player::GetPosition()
 {
 	return m_sprite.getPosition();
 }
+
+void Player::HandleCollision(sf::FloatRect _platform)
+{
+	bool wereTouchingGround = m_touchingGround;
+	m_touchingGround = false;
+
+	// Assume we had a collision
+	bool hadCollision = false;
+	// Get the collider for the player
+	sf::FloatRect playerCollider = m_sprite.getGlobalBounds();
+
+	// Does our sprite intersect the platform?
+	if (playerCollider.intersects(_platform))
+	{
+		
+		
+		//Yes it intersects
+
+		// Check if the bottom of our feet is touching the
+		//top of the platform
+
+		// Create feet collider
+		sf::FloatRect feetCollider = playerCollider;
+		// Set our feet top to be 10 pixels from the bottom of the player collider
+		feetCollider.top += playerCollider.height - 10;
+		// Set our feet collider height to be 10 pixels
+		feetCollider.height = 10;
+
+		// Create platform top collider
+		sf::FloatRect platformTop = _platform;
+		platformTop.height = 10;
+
+		// Are the feet touching the top of the platform?
+		if (feetCollider.intersects(platformTop))
+		{
+			//Yes feet are touching
+			m_touchingGround = true;
+			// Check if we are falling downward
+			if (wereTouchingGround == false && m_velocity.y > 0)
+			{
+				// We have touched the ground!!!!!
+
+
+				
+					m_animation.Play("run");
+					m_landSound.play();
+
+					m_velocity.y = 0;
+				
+					
+				
+				
+			}
+		}
+		
+	}
+	if (m_touchingGround == false && wereTouchingGround == true)
+	{
+		m_animation.Play("jump");
+}
+}
+
