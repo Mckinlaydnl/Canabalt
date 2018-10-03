@@ -6,8 +6,7 @@
 
 // Project Includes
 #include "AssetManager.h"
-#include "Animation.h"
-#include "AnimationSystem.h"
+#include "Player.h"
 
 
 
@@ -28,38 +27,12 @@ int main()
 	//Create AssetManager
 	AssetManager assets;
 
-	// Testing AssetManager
-	sf::Sprite testSprite;
-	testSprite.setTexture(AssetManager::GetTexture("graphics/playerJump.png"));
-	
-	sf::Sound testSound;
-	testSound.setBuffer(AssetManager::GetSoundBuffer("audio/deathSound.ogg"));
-	testSound.play();
+	//Create Player
+	Player myPlayer;
+	myPlayer.Spawn();
 
-	sf::Text testText;
-	testText.setFont(AssetManager::GetFont("fonts/mainFont.ttf"));
-	testText.setString("Test Text");
-
-
-	//Testing Animation
-	AnimationSystem testAnimationSystem;
-	testAnimationSystem.SetSprite(testSprite);
-
-
-	Animation& testAnimation = testAnimationSystem.CreateAnimation("run");
-	testAnimation.AddFrame(AssetManager::GetTexture("graphics/playerRun1.png"));
-	testAnimation.AddFrame(AssetManager::GetTexture("graphics/playerRun2.png"));
-	testAnimation.SetLoop(true);
-	testAnimation.SetPlayBackSpeed(10.0f);
-
-	Animation& jumpAnimation = testAnimationSystem.CreateAnimation("jump");
-	jumpAnimation.AddFrame(AssetManager::GetTexture("graphics/playerJump.png"));
-
-	testAnimationSystem.Play("run");
-
-	
-	
-	
+	// Create game camera
+	sf::View camera = gameWindow.getDefaultView();
 
 	// end game setup
 	// --------------------------------------
@@ -76,6 +49,10 @@ int main()
 		sf::Event event;
 		while (gameWindow.pollEvent(event))
 		{
+			// Pass input to game objects
+			myPlayer.Input(event);
+
+
 			if (event.type == sf::Event::Closed)
 			{
 				gameWindow.close();
@@ -90,7 +67,11 @@ int main()
 		// Update
 		// --------------------------------------
 		sf::Time frameTime = gameClock.restart();
-		testAnimation.Update(frameTime);
+		
+		myPlayer.Update(frameTime);
+
+		//Update camera positon
+		camera.setCenter(myPlayer.GetPosition().x + camera.getSize().x * 0.4f, camera.getCenter().y);
 		// end update
 		// --------------------------------------
 
@@ -104,8 +85,11 @@ int main()
 		gameWindow.clear();
 
 		// Draw Everything
-		gameWindow.draw(testSprite);
-		gameWindow.draw(testText);
+		gameWindow.setView(camera);
+		myPlayer.Draw(gameWindow);
+
+		//Draw the UI to the window
+		gameWindow.setView(gameWindow.getDefaultView());
 
 		// Display the window contents to the screen
 		gameWindow.display();

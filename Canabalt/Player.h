@@ -11,10 +11,16 @@ class Player
 {
 
 public:
+
+	Player();
+
 	void Input(sf::Event _gameEvent);
 	void Update(sf::Time _frameTime);
 	void Draw(sf::RenderTarget& _target);
 
+	void Spawn();
+
+	sf::Vector2f GetPosition();
 private:
 
 	// Assets
